@@ -8,9 +8,25 @@ module Sequel
     def print(*cols)
       Sequel::PrettyTable.print(naked.all, cols.empty? ? columns : cols)
     end
+    def print_to_string(*cols)
+      Sequel::PrettyTable.print_to_string(naked.all, cols.empty? ? columns : cols)
+    end
   end
 
   module PrettyTable
+    def self.print_to_string(records, columns = nil)
+      table = ""
+      columns ||= records.first.keys.sort_by{|x|x.to_s}
+      sizes = column_sizes(records, columns)
+      sep_line = separator_line(columns, sizes)
+
+      table << sep_line
+      table << header_line(columns, sizes)
+      table << sep_line
+      records.each {|r| table << data_line(columns, sizes, r)}
+      table << sep_line
+    end
+  
     # Prints nice-looking plain-text tables via puts
     # 
     #   +--+-------+
@@ -20,15 +36,7 @@ module Sequel
     #   |2 |test   |
     #   +--+-------+
     def self.print(records, columns = nil) # records is an array of hashes
-      columns ||= records.first.keys.sort_by{|x|x.to_s}
-      sizes = column_sizes(records, columns)
-      sep_line = separator_line(columns, sizes)
-
-      puts sep_line
-      puts header_line(columns, sizes)
-      puts sep_line
-      records.each {|r| puts data_line(columns, sizes, r)}
-      puts sep_line
+      puts print_to_string(records, columns)
     end
 
     ### Private Module Methods ###
