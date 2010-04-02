@@ -20,11 +20,11 @@ module Sequel
       sizes = column_sizes(records, columns)
       sep_line = separator_line(columns, sizes)
 
-      table << sep_line
-      table << header_line(columns, sizes)
-      table << sep_line
-      records.each {|r| table << data_line(columns, sizes, r)}
-      table << sep_line
+      table << sep_line << "\n"
+      table << header_line(columns, sizes) << "\n"
+      table << sep_line << "\n"
+      records.each {|r| table << data_line(columns, sizes, r) << "\n" }
+      table << sep_line << "\n"
     end
   
     # Prints nice-looking plain-text tables via puts
@@ -36,7 +36,7 @@ module Sequel
     #   |2 |test   |
     #   +--+-------+
     def self.print(records, columns = nil) # records is an array of hashes
-      puts print_to_string(records, columns)
+      print print_to_string(records, columns)
     end
 
     ### Private Module Methods ###
